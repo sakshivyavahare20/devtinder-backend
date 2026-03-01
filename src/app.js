@@ -10,30 +10,18 @@ const initializeSocket = require("./utils/socket");
 require("./utils/cronjob");
 
 // 1. UPDATED CORS HANDLER
-app.use((req, res, next) => {
-  // Add your local dev URL and your future Production URL here
-  const allowedOrigins = [
-    'http://localhost:5173', 
-    'http://127.0.0.1:5173',
-    process.env.FRONTEND_URL // This will be your deployed frontend link
-  ];
-  
-  const origin = req.headers.origin;
-  
-  if (allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-  }
-  
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Cookie");
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header("Access-Control-Max-Age", "86400"); 
+// Replace your manual app.use((req, res, next) => { ... }) block with this:
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "http://127.0.0.1:5173", process.env.FRONTEND_URL],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie"]
+  })
+);
 
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-  next();
-});
+app.use(express.json());
+app.use(cookieParser());
 
 // Rest of your middleware and routes remain the same...
 app.use(express.json());

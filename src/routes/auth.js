@@ -27,12 +27,15 @@ authRouter.post("/signup", async (req, res) => {
     const savedUser = await user.save();
     const token = await savedUser.getJWT();
 
+    // Inside your login controller:
     res.cookie("token", token, {
       expires: new Date(Date.now() + 8 * 3600000),
-      httpOnly: true, // Security best practice
-      sameSite: "lax", // Allows the cookie to be sent in cross-origin requests
-      secure: false, // Set to true only if using HTTPS
+      httpOnly: true,
+      secure: true, // Required because Render uses HTTPS
+      sameSite: "none", // Required because Frontend (localhost) and Backend (Render) are on different domains
     });
+
+    res.send(user);
 
     res.json({ message: "User Added successfully!", data: savedUser });
   } catch (err) {
