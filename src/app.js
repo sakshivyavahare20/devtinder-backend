@@ -1,3 +1,4 @@
+avaScript
 require("dotenv").config();
 const express = require("express");
 const connectDB = require("./config/database");
@@ -9,16 +10,18 @@ const initializeSocket = require("./utils/socket");
 
 require("./utils/cronjob");
 
-// 1. UPDATED CORS HANDLER
-// Replace your manual app.use((req, res, next) => { ... }) block with this:
+// Use the standard CORS package - this fixes the 400/CORS errors
 app.use(
   cors({
     origin: ["http://localhost:5173", "http://127.0.0.1:5173", process.env.FRONTEND_URL],
-    credentials: true,
+    credentials: true, // Required for cookies to work
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Cookie"]
   })
 );
+
+app.use(express.json());
+app.use(cookieParser());
 
 app.use(express.json());
 app.use(cookieParser());
