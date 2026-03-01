@@ -12,8 +12,8 @@ require("./utils/cronjob");
 // Use the official CORS package with these specific settings
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://127.0.0.1:5173", process.env.FRONTEND_URL],
-    credentials: true, // Required for cookies to work
+    origin: ["http://localhost:5173", process.env.FRONTEND_URL],
+    credentials: true, // This allows the browser to send/receive cookies
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Cookie"]
   })

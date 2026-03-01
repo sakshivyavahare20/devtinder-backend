@@ -7,16 +7,13 @@ const bcrypt = require("bcrypt");
 
 authRouter.post("/signup", async (req, res) => {
   try {
-    // Validation of data
     validateSignUpData(req);
 
     const { firstName, lastName, emailId, password } = req.body;
 
-    // Encrypt the password
     const passwordHash = await bcrypt.hash(password, 10);
     console.log(passwordHash);
 
-    //   Creating a new instance of the User model
     const user = new User({
       firstName,
       lastName,
@@ -60,7 +57,11 @@ authRouter.post("/login", async (req, res) => {
 
       res.cookie("token", token, {
         expires: new Date(Date.now() + 8 * 3600000),
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
       });
+      
       res.send(user);
     } else {
       throw new Error("Invalid credentials");
@@ -73,8 +74,10 @@ authRouter.post("/login", async (req, res) => {
 authRouter.post("/logout", async (req, res) => {
   res.cookie("token", null, {
     expires: new Date(Date.now()),
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
   });
   res.send("Logout Successful!!");
 });
-
 module.exports = authRouter;
