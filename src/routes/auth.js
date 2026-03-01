@@ -25,16 +25,16 @@ authRouter.post("/signup", async (req, res) => {
     });
 
     const savedUser = await user.save();
-    // Inside your login route after verifying the user:
     const token = await user.getJWT();
 
     res.cookie("token", token, {
       expires: new Date(Date.now() + 8 * 3600000),
-      httpOnly: true, // Protects against XSS
-      secure: true, // REQUIRED because Render is HTTPS
-      sameSite: "none", // REQUIRED for cross-site (localhost to render)
+      httpOnly: true,
+      secure: true,
+      sameSite: "none", 
     });
 
+    res.send(user);
     res.send(user);
 
     res.send(user);

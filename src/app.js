@@ -1,4 +1,3 @@
-avaScript
 require("dotenv").config();
 const express = require("express");
 const connectDB = require("./config/database");
@@ -10,7 +9,7 @@ const initializeSocket = require("./utils/socket");
 
 require("./utils/cronjob");
 
-// Use the standard CORS package - this fixes the 400/CORS errors
+// Use the official CORS package with these specific settings
 app.use(
   cors({
     origin: ["http://localhost:5173", "http://127.0.0.1:5173", process.env.FRONTEND_URL],
@@ -20,13 +19,6 @@ app.use(
   })
 );
 
-app.use(express.json());
-app.use(cookieParser());
-
-app.use(express.json());
-app.use(cookieParser());
-
-// Rest of your middleware and routes remain the same...
 app.use(express.json());
 app.use(cookieParser());
 
@@ -50,7 +42,6 @@ initializeSocket(server);
 connectDB()
   .then(() => {
     console.log("Database connection established...");
-    // Render/Heroku will provide a PORT, otherwise defaults to 7777
     const PORT = process.env.PORT || 7777;
     server.listen(PORT, () => {
       console.log(`Server is successfully listening on port ${PORT}...`);
