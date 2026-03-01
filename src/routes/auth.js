@@ -45,21 +45,23 @@ authRouter.post("/signup", async (req, res) => {
 authRouter.post("/login", async (req, res) => {
   try {
     const { emailId, password } = req.body;
-
     const user = await User.findOne({ emailId: emailId });
+
     if (!user) {
       throw new Error("Invalid credentials");
     }
+
     const isPasswordValid = await user.validatePassword(password);
 
     if (isPasswordValid) {
       const token = await user.getJWT();
 
+      // THIS IS THE CRITICAL FIX
       res.cookie("token", token, {
         expires: new Date(Date.now() + 8 * 3600000),
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
+        secure: true,      // Must be true for Render's HTTPS
+        sameSite: "none",  // Must be "none" for cross-site (localhost to render)
       });
       
       res.send(user);
@@ -72,6 +74,7 @@ authRouter.post("/login", async (req, res) => {
 });
 
 authRouter.post("/logout", async (req, res) => {
+  // Clear cookie with same security settings
   res.cookie("token", null, {
     expires: new Date(Date.now()),
     httpOnly: true,
